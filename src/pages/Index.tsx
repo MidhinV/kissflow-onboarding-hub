@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { VideoCard } from "@/components/VideoCard";
 import { VideoPlayer } from "@/components/VideoPlayer";
 import { Progress } from "@/components/ui/progress";
@@ -19,7 +19,7 @@ const Index = () => {
     {
       id: "1",
       title: "Introduction to KissFlow",
-      duration: "5:30",
+      duration: "Loading...",
       isCompleted: false,
       thumbnail: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=450&fit=crop",
       videoUrl: "/videos/intro.mp4",
@@ -27,7 +27,7 @@ const Index = () => {
     {
       id: "2",
       title: "Conditional Visibility",
-      duration: "8:45",
+      duration: "Loading...",
       isCompleted: false,
       thumbnail: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=450&fit=crop",
       videoUrl: "/videos/conditional-visibility.mp4",
@@ -35,7 +35,7 @@ const Index = () => {
     {
       id: "3",
       title: "Accessing Process",
-      duration: "6:20",
+      duration: "Loading...",
       isCompleted: false,
       thumbnail: "https://images.unsplash.com/photo-1553877522-43269d4ea984?w=800&h=450&fit=crop",
       videoUrl: "/videos/accessing-process.mp4",
@@ -43,7 +43,7 @@ const Index = () => {
     {
       id: "4",
       title: "Managing Items - Initiator",
-      duration: "7:15",
+      duration: "Loading...",
       isCompleted: false,
       thumbnail: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=800&h=450&fit=crop",
       videoUrl: "/videos/managing-items-initiator.mp4",
@@ -51,12 +51,52 @@ const Index = () => {
     {
       id: "5",
       title: "Managing Items - Assignee",
-      duration: "7:45",
+      duration: "Loading...",
       isCompleted: false,
       thumbnail: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&h=450&fit=crop",
       videoUrl: "/videos/managing-items-assignee.mp4",
     },
   ]);
+
+  useEffect(() => {
+    const loadVideoDurations = async () => {
+      const updatedVideos = await Promise.all(
+        videos.map(async (video) => {
+          if (!video.videoUrl) return video;
+          
+          return new Promise<Video>((resolve) => {
+            const videoElement = document.createElement('video');
+            videoElement.preload = 'metadata';
+            
+            videoElement.onloadedmetadata = () => {
+              const duration = videoElement.duration;
+              const minutes = Math.floor(duration / 60);
+              const seconds = Math.floor(duration % 60);
+              const formattedDuration = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+              
+              resolve({
+                ...video,
+                duration: formattedDuration
+              });
+            };
+            
+            videoElement.onerror = () => {
+              resolve({
+                ...video,
+                duration: "N/A"
+              });
+            };
+            
+            videoElement.src = video.videoUrl;
+          });
+        })
+      );
+      
+      setVideos(updatedVideos);
+    };
+
+    loadVideoDurations();
+  }, []);
 
   const completedCount = videos.filter(v => v.isCompleted).length;
   const progressPercentage = (completedCount / videos.length) * 100;
