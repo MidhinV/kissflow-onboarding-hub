@@ -103,9 +103,11 @@ const Index = () => {
 
   const handleVideoClick = (video: Video) => {
     setSelectedVideo(video);
-    // Mark as completed when opened
+  };
+
+  const handleVideoComplete = (videoId: string) => {
     setVideos(prev => prev.map(v => 
-      v.id === video.id ? { ...v, isCompleted: true } : v
+      v.id === videoId ? { ...v, isCompleted: true } : v
     ));
   };
 
@@ -172,6 +174,7 @@ const Index = () => {
           title={selectedVideo.title}
           videoUrl={selectedVideo.videoUrl}
           onClose={() => setSelectedVideo(null)}
+          onComplete={() => handleVideoComplete(selectedVideo.id)}
         />
       )}
     </div>
