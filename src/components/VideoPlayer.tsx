@@ -5,9 +5,15 @@ interface VideoPlayerProps {
   title: string;
   videoUrl?: string;
   onClose: () => void;
+  onComplete?: () => void;
 }
 
-export const VideoPlayer = ({ title, videoUrl, onClose }: VideoPlayerProps) => {
+export const VideoPlayer = ({ title, videoUrl, onClose, onComplete }: VideoPlayerProps) => {
+  const handleVideoEnd = () => {
+    if (onComplete) {
+      onComplete();
+    }
+  };
   return (
     <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4 animate-in fade-in duration-300">
       <div className="w-full max-w-5xl">
@@ -29,6 +35,7 @@ export const VideoPlayer = ({ title, videoUrl, onClose }: VideoPlayerProps) => {
               className="w-full h-full"
               controls
               autoPlay
+              onEnded={handleVideoEnd}
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/20 to-accent/20">
