@@ -24,11 +24,11 @@ export const VideoPlayer = ({ title, videoUrl, onClose }: VideoPlayerProps) => {
         </div>
         <div className="relative aspect-video bg-muted rounded-lg overflow-hidden">
           {videoUrl ? (
-            <iframe
+            <video
               src={videoUrl}
               className="w-full h-full"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
+              controls
+              autoPlay
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/20 to-accent/20">
