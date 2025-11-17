@@ -171,6 +171,7 @@ const Index = () => {
       {/* Video Player Modal */}
       {selectedVideo && (
         <VideoPlayer
+          videoId={selectedVideo.id}
           title={selectedVideo.title}
           videoUrl={selectedVideo.videoUrl}
           onClose={() => setSelectedVideo(null)}
